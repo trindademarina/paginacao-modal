@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='modal.css') }}">
+    <title>Minha lista de músicas</title>
+</head>
+<body>
+
+    <h1> Lista de Músicas da Marina - Página {{ page }}</h1>
+    <ul>
+        {%for produto in produtosPagina %} <!--mostrando os produtos da minha lista numa lista-->
+
+        <li> {{ produto.nome }}  <button onclick="modal({{produto.id}})" type="button"> Ver detalhes </button> </li> <!-- quando ver detalhes for clicado, aparecera a 
+        função modal, e parametros é o id do produto-->
+
+        {% endfor%}<!---->
+    </ul>
+
+    <!-- AUTO EXPLICATIVO -->
+
+    {% if page > 1 %}
+    <a href="{{url_for('index', page = page -1)}}"> Página Anterior</a>
+    {% endif %}
+
+    Página {{page}}
+
+    {% if page < totalPaginas %} <!-- ta em vermelho, mas ta funcionando por algum milagre-->
+    <a href="{{url_for('index', page = page + 1)}}"> Próxima Página</a>
+    {% endif %}
+
+    <!-- MODAL, UM SACO ESSE NEGÓCIO, mas é muito bonitinho-->
+
+
+    <div id='modal' class="modal"> <!-- o modal em terra-->
+        <div id="corpo-modal">
+        </div>
+        <button class= button type="button" onclick="fecharModal()"> Fechar </button>
+    </div>
+
+    <script>
+        //pelo id, mostra no html o nome e a descrição do produto
+        var produtosPagina = {{produtos|tojson}} //apanhei pra descobrir q tinha q converter pra json, pro js entender
+        function modal(id){
+            const modal =document.getElementById('modal')
+            const corpoModal = document.getElementById('corpo-modal')
+
+            corpoModal.innerHTML =  
+            `<h2>${produtosPagina[id].nome}</h2>
+            <p>${produtosPagina[id].descricao}</p>`
+
+            modal.style.display = 'flex'
+
+        }
+
+        function fecharModal(){ //auto explicativo tbm
+            const modal =document.getElementById('modal')
+            modal.style.display = 'none'
+        }
+
+    </script>
+
+</body>
+</html>
